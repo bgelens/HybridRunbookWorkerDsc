@@ -1,0 +1,10 @@
+
+[ClassVersion("1.0.0.0"), FriendlyName("HybridRunbookWorker")]
+class MSFT_HybridRunbookWorker : OMI_BaseResource
+{
+    [Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Key] String Endpoint;
+    [Required, EmbeddedInstance("MSFT_Credential")] String Token;
+    [Required] String GroupName;
+};
+
