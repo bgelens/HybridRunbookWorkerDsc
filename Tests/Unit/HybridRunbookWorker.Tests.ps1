@@ -1,8 +1,8 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
-$script:ModuleName = 'HybridRunbookWorkerDsc'
-$script:DscResourceName = 'MSFT_HybridRunbookWorker'
+$Global:ModuleName = 'HybridRunbookWorkerDsc'
+$Global:DscResourceName = 'MSFT_HybridRunbookWorker'
 
 #region HEADER
 
@@ -18,8 +18,8 @@ Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\
 
 # TODO: Insert the correct <ModuleName> and <ResourceName> for your resource
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $script:ModuleName `
-    -DSCResourceName $script:DscResourceName `
+    -DSCModuleName $Global:ModuleName `
+    -DSCResourceName $Global:DscResourceName `
     -TestType Unit 
 
 #endregion HEADER
@@ -40,7 +40,7 @@ try
     Invoke-TestSetup
 
     #region Pester Tests
-    InModuleScope $script:DscResourceName {
+    InModuleScope $Global:DscResourceName {
         $Token = New-Object -TypeName PSCredential -ArgumentList 'TestToken',(ConvertTo-SecureString -String 'BogusToken' -AsPlainText -Force)
         $GroupName = 'TestGroup'
         $EndPoint = 'https://TestEndpoint'
@@ -48,7 +48,7 @@ try
         function Add-HybridRunbookWorker { }
 
         #region Function Get-TargetResource
-        Describe "$($script:DSCResourceName)\Get-TargetResource" {
+        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock -CommandName TestRegModule -MockWith {return $true}
 
@@ -61,7 +61,7 @@ try
 
 
         #region Function Test-TargetResource
-        Describe "$($Script:DSCResourceName)\Test-TargetResource" {
+        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
             Context 'Invoking with HybridRegistration Module missing' {
                 Mock -CommandName TestRegModule -MockWith {return $false}
                 $ErrorRecord = New-Object System.Management.Automation.ErrorRecord 'HybridRegistration Module is not Present. OMS Agent is probably not installed', 'ModuleNotPresent', 'ObjectNotFound', $null
@@ -118,7 +118,7 @@ try
         ##endregion
 
         #region Function Set-TargetResource
-        Describe "$($script:DSCResourceName)\Set-TargetResource" {
+        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
             Mock Remove-HybridRunbookWorker
             Mock Add-HybridRunbookWorker
             Mock -CommandName TestRegModule -MockWith {return $true}
