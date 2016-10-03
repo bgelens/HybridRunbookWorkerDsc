@@ -1,3 +1,6 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
+param ()
+
 $script:ModuleName = 'HybridRunbookWorkerDsc'
 $script:DscResourceName = 'MSFT_HybridRunbookWorker'
 
