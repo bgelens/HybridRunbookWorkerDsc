@@ -6,7 +6,7 @@
 #---------------------------------# 
 #      environment configuration  # 
 #---------------------------------# 
-version: 1.0.{build}.0 # TODO Modify version
+version: 0.0.0.{build}
 install:
     - git clone https://github.com/PowerShell/DscResource.Tests
     - ps: |
@@ -42,14 +42,14 @@ deploy_script:
   - ps: |
       # Creating project artifact
       $stagingDirectory = (Resolve-Path ..).Path
-      $manifest = Join-Path $pwd "xWordPress.psd1" # TODO Modify psd1 name
-      (Get-Content $manifest -Raw).Replace("1.0.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest # TODO Modify version
+      $manifest = Join-Path $pwd "HybridRunbookWorkerDsc.psd1"
+      (Get-Content $manifest -Raw).Replace("0.0.0.0", $env:APPVEYOR_BUILD_VERSION) | Out-File $manifest
       $zipFilePath = Join-Path $stagingDirectory "$(Split-Path $pwd -Leaf).zip"
       Add-Type -assemblyname System.IO.Compression.FileSystem
       [System.IO.Compression.ZipFile]::CreateFromDirectory($pwd, $zipFilePath)
       
       # Creating NuGet package artifact
-      New-Nuspec -packageName $env:APPVEYOR_PROJECT_NAME -version $env:APPVEYOR_BUILD_VERSION -author "Microsoft" -owners "Microsoft" -licenseUrl "https://github.com/PowerShell/DscResources/blob/master/LICENSE" -projectUrl "https://github.com/$($env:APPVEYOR_REPO_NAME)" -packageDescription $env:APPVEYOR_PROJECT_NAME -tags "DesiredStateConfiguration DSC DSCResourceKit" -destinationPath .
+      New-Nuspec -packageName $env:APPVEYOR_PROJECT_NAME -version $env:APPVEYOR_BUILD_VERSION -author "Microsoft" -owners "Microsoft" -licenseUrl "https://github.com/PowerShell/DscResources/blob/master/LICENSE" -projectUrl "https://github.com/$($env:APPVEYOR_REPO_NAME)" -packageDescription $env:APPVEYOR_PROJECT_NAME -tags "DesiredStateConfiguration DSC DSCResourceKit HybridRunbookWorker" -destinationPath .
       nuget pack ".\$($env:APPVEYOR_PROJECT_NAME).nuspec" -outputdirectory .
       $nuGetPackageName = $env:APPVEYOR_PROJECT_NAME + "." + $env:APPVEYOR_BUILD_VERSION + ".nupkg"
       $nuGetPackagePath = (Get-ChildItem $nuGetPackageName).FullName
