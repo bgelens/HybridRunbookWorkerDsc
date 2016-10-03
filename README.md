@@ -1,4 +1,4 @@
-{AppVeyor build status badge for master branch}
+Build status dev: [![Build status](https://ci.appveyor.com/api/projects/status/w7359l21bp14oiec/branch/dev?svg=true)](https://ci.appveyor.com/project/bgelens/hybridrunbookworkerdsc/branch/dev)
 
 # HybridRunbookWorkerDsc
 
