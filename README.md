@@ -2,7 +2,10 @@ Build status dev: [![Build status](https://ci.appveyor.com/api/projects/status/w
 
 # HybridRunbookWorkerDsc
 
-{ Description of the module - Please include any requirements for running all resources in this module (e.g. Must run on Windows Server OS, must have Exchange already installed) - Requirements specific to only certain resources in this module may be listed below with the description of those resources. }
+This module contains resources to onboard / remove Hybrid Runbook Workers from an Automation Account and to reassign the Group membership if needed.
+
+For this resource to work, the node on which this resource is used must already have the Microsoft Monitoring Agent installed.
+The OMS Workspace should have the Automation solution enabled and coupled with an Automation Account.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
@@ -12,25 +15,25 @@ If you would like to contribute to this repository, please read the DSC Resource
 
 ## Resources
 
-* {**HybridRunbookWorker** One line description of resource 1}
+* **HybridRunbookWorker** Used for onboarding Hybrid Runbook Worker into Automation Account. Also governs the Group assignment and can be used to remove the worker from the Automation Account.
 
-### {HybridRunbookWorker}
+### HybridRunbookWorker
+This resource is capable of:
+* Enabling Hybrid Runbook Worker if Microsoft Monitoring Agent is already installed.
+* Change the Hybrid Runbook Worker Group
+* Remove Hybrid Runbook Worker from Automation Account.
 
-{ Detailed description of resource 1 - Please include any requirements for running this resource (e.g. Must run on Windows Server OS, must have Exchange already installed) }
-* Enable Hybrid Runbook Worker if Agent is already installed.
-* Change WorkerGroup
-* Remove Hybrid Runbook Worker
-
-* {**Ensure**: Description of resource 1 property 1}
-* {**Endpoint**: Description of resource 1 property 2}
-* {**Token**: Description of resource 1 property 3}
-* {**GroupName**: Description of resource 1 property 4}
+This resource contains the following properties:
+* **Ensure**: Ensures that the node is onboarded or removed from the Automation Account.
+* **Endpoint**: Uri of Automation Account.
+* **Token**: Credential containing the Automation Account primary or secondary key as a password.
+* **GroupName**: The Hybrid Runbook Worker Group for this Worker to join.
 
 ## Versions
 
 ### Unreleased
 
-### {1.0.0.0}
-
 * Initial release with the following resources:
     * HybridRunbookWorker
+
+### 1.0.0.0
