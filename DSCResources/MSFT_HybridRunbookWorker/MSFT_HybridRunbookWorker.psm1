@@ -99,7 +99,7 @@ function Get-TargetResource
 
 <#
     .SYNOPSIS
-    Returns the current Hybrid Runbook Worker configuration state.
+    Sets the Hybrid Runbook Worker configuration state.
     .PARAMETER Ensure
     Specifies if the Hybrid Runbook Worker should be onboarded or removed from the Automation Account.
     .PARAMETER Endpoint
@@ -177,7 +177,7 @@ function Set-TargetResource
 
 <#
     .SYNOPSIS
-    Returns the current Hybrid Runbook Worker configuration state.
+    Tests if the Hybrid Runbook Worker configuration state is in the desired state.
     .PARAMETER Ensure
     Specifies if the Hybrid Runbook Worker should be onboarded or removed from the Automation Account.
     .PARAMETER Endpoint

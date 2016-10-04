@@ -37,6 +37,13 @@ Configuration HybridRunbookWorkerConfig
             DependsOn = "[Package]OI"
         }
 
+        WaitForHybridRegistrationModule ModuleWait
+        {
+            IsSingleInstance = 'Yes'
+            RetryIntervalSec = 3
+            RetryCount = 2
+            DependsOn = '[Package]OI'
+        }
 
         HybridRunbookWorker Onboard
         {
@@ -44,7 +51,7 @@ Configuration HybridRunbookWorkerConfig
             Endpoint  = Get-AutomationVariable AutomationEndpoint
             Token     = Get-AutomationPSCredential AutomationCredential
             GroupName = $Node.NodeName
-            DependsOn = '[Package]OI'
+            DependsOn = '[WaitForHybridRegistrationModule]ModuleWait'
         }
     }
 }
