@@ -2,10 +2,10 @@ Build status dev: [![Build status](https://ci.appveyor.com/api/projects/status/w
 
 # HybridRunbookWorkerDsc
 
-This module contains resources to onboard / remove Hybrid Runbook Workers from an Automation Account and to reassign the Group membership if needed.
+This module contains resources to onboard or remove Hybrid Runbook Worker from an Automation Account and to reassign the Group membership if needed.
 
 For this resource to work, the node on which this resource is used must already have the Microsoft Monitoring Agent installed.
-The OMS Workspace should have the Automation solution enabled and coupled with an Automation Account.
+You should link an Automation Account to the OMS Workspace and add the Azure Automation Analytics solution.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
@@ -16,7 +16,7 @@ If you would like to contribute to this repository, please read the DSC Resource
 ## Resources
 
 * **HybridRunbookWorker** Used for onboarding Hybrid Runbook Worker into Automation Account. Also governs the Group assignment and can be used to remove the worker from the Automation Account.
-* **WaitForHybridRegistrionModule** Used to wait for HybridRegistration Module to be pushed to node by OMS.
+* **WaitForHybridRegistrationModule** Used to wait for HybridRegistration module to be pushed to node by OMS.
 
 ### HybridRunbookWorker
 This resource is capable of:
@@ -26,13 +26,13 @@ This resource is capable of:
 
 This resource contains the following properties:
 * **Ensure**: Ensures that the node is onboarded or removed from the Automation Account.
-* **Endpoint**: Uri of Automation Account.
+* **Endpoint**: URI of the Automation Account.
 * **Token**: Credential containing the Automation Account primary or secondary key as a password.
-* **GroupName**: The Hybrid Runbook Worker Group for this Worker to join.
+* **GroupName**: The Hybrid Runbook Worker Group for this worker to join.
 
-### WaitForHybridRegistrionModule
+### WaitForHybridRegistrationModule
 This resource is capable of:
-* Waiting for the HybridRegistration to appear.
+* Waiting for the HybridRegistration module to appear.
 
 This resource contains the following properties:
 * **IsSingleInstance**: Specifies if the resource is a single instance, the value must be 'Yes'
@@ -45,6 +45,6 @@ This resource contains the following properties:
 
 * Initial release with the following resources:
     * HybridRunbookWorker
-    * WaitForHybridRegistrionModule
+    * WaitForHybridRegistrationModule
 
 ### 1.0.0.0
