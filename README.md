@@ -16,6 +16,7 @@ If you would like to contribute to this repository, please read the DSC Resource
 ## Resources
 
 * **HybridRunbookWorker** Used for onboarding Hybrid Runbook Worker into Automation Account. Also governs the Group assignment and can be used to remove the worker from the Automation Account.
+* **WaitForHybridRegistrionModule** Used to wait for HybridRegistration Module to be pushed to node by OMS.
 
 ### HybridRunbookWorker
 This resource is capable of:
@@ -29,11 +30,21 @@ This resource contains the following properties:
 * **Token**: Credential containing the Automation Account primary or secondary key as a password.
 * **GroupName**: The Hybrid Runbook Worker Group for this Worker to join.
 
+### WaitForHybridRegistrionModule
+This resource is capable of:
+* Waiting for the HybridRegistration to appear.
+
+This resource contains the following properties:
+* **IsSingleInstance**: Specifies if the resource is a single instance, the value must be 'Yes'
+* **RetryIntervalSec**: Specifies amount of seconds between retries. Default 60 seconds.
+* **RetryCount**: Specifies amount of retries. Default 10 times.
+
 ## Versions
 
 ### Unreleased
 
 * Initial release with the following resources:
     * HybridRunbookWorker
+    * WaitForHybridRegistrionModule
 
 ### 1.0.0.0
