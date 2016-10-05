@@ -1,11 +1,13 @@
-Configuration HybridRunbookWorkerConfig
+configuration HybridRunbookWorkerConfig
 {
 
-    Import-DscResource -ModuleName @{ModuleName='xPSDesiredStateConfiguration'; ModuleVersion='3.9.0.0'}
-    Import-DscResource -ModuleName HybridRunbookWorker
+    Import-DscResource -ModuleName @{ModuleName='xPSDesiredStateConfiguration'; ModuleVersion='4.0.0.0'}
+    Import-DscResource -ModuleName HybridRunbookWorkerDsc
 
     $OmsWorkspaceId = Get-AutomationVariable WorkspaceID
     $OmsWorkspaceKey = Get-AutomationVariable WorkspaceKey
+    $AutomationEndpoint = Get-AutomationVariable AutomationEndpoint
+    $AutomationKey = Get-AutomationPSCredential AutomationCredential
 
     $OIPackageLocalPath = "C:\MMASetup-AMD64.exe"
 
@@ -18,14 +20,16 @@ Configuration HybridRunbookWorkerConfig
             DestinationPath = $OIPackageLocalPath
         }
 
-        # Application
+        # Application, requires reboot. Allow reboot in meta config
         Package OI
         {
             Ensure = "Present"
             Path = $OIPackageLocalPath
             Name = "Microsoft Monitoring Agent"
-            ProductId = ""
-            Arguments = '/C:"setup.exe /qn ADD_OPINSIGHTS_WORKSPACE=1 OPINSIGHTS_WORKSPACE_ID=' + $OmsWorkspaceID + ' OPINSIGHTS_WORKSPACE_KEY=' + $OmsWorkspaceKey + ' AcceptEndUserLicenseAgreement=1"'
+            ProductId = "E854571C-3C01-4128-99B8-52512F44E5E9"
+            Arguments = '/Q /C:"setup.exe /qn ADD_OPINSIGHTS_WORKSPACE=1 OPINSIGHTS_WORKSPACE_ID=' + 
+                $OmsWorkspaceID + ' OPINSIGHTS_WORKSPACE_KEY=' + 
+                    $OmsWorkspaceKey + ' AcceptEndUserLicenseAgreement=1"'
             DependsOn = "[xRemoteFile]OIPackage"
         }
         
@@ -48,8 +52,8 @@ Configuration HybridRunbookWorkerConfig
         HybridRunbookWorker Onboard
         {
             Ensure    = 'Present'
-            Endpoint  = Get-AutomationVariable AutomationEndpoint
-            Token     = Get-AutomationPSCredential AutomationCredential
+            Endpoint  = $AutomationEndpoint
+            Token     = $AutomationKey
             GroupName = $Node.NodeName
             DependsOn = '[WaitForHybridRegistrationModule]ModuleWait'
         }
