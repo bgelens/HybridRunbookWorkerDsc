@@ -320,7 +320,14 @@ function TestRegRegistry
 #>
 function GetRegRegistry
 {
-    Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker
+    $Reg = Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker
+    if ($null -eq $Reg) {
+        #newer version
+        $Reg = [pscustomobject]@{
+            RunbookWorkerGroup = Split-Path -Path (Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\*).Name -Leaf
+        }
+    }
+    $Reg
 }
 
 <#
