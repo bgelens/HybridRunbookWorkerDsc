@@ -323,8 +323,18 @@ function GetRegRegistry
     $Reg = Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker
     if ($null -eq $Reg) {
         #newer version
+        $GroupName = Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\* | 
+            ForEach-Object -Process {
+                if (Get-ChildItem -Path $_.PSPath |
+                    Where-Object -FilterScript {
+                        $_.PSChildName -eq 'User'
+                    }
+                ) {
+                    $_.PSChildName
+                }
+            }
         $Reg = [pscustomobject]@{
-            RunbookWorkerGroup = Split-Path -Path (Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\*).Name -Leaf
+            RunbookWorkerGroup = $GroupName
         }
     }
     $Reg
