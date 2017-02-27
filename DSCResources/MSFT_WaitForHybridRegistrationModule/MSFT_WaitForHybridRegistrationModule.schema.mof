@@ -1,0 +1,10 @@
+
+[ClassVersion("1.0.0.0"), FriendlyName("WaitForHybridRegistrationModule")]
+class MSFT_WaitForHybridRegistrationModule : OMI_BaseResource
+{
+    [Key, Description("Specifies the resource is a single instance, the value must be 'Yes'"), ValueMap{"Yes"}, Values{"Yes"}] String IsSingleInstance;
+    [Write] uint64 RetryIntervalSec;
+    [Write] uint32 RetryCount;
+    [Read] Boolean ModulePresent;
+};
+
