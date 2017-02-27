@@ -12,7 +12,7 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '0.0.0.1'
+ModuleVersion = '1.0.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -21,13 +21,13 @@ ModuleVersion = '0.0.0.1'
 GUID = '6cb3077c-bada-4f18-82bc-42ba31de3ee9'
 
 # Author of this module
-Author = 'Microsoft Corporation'
+Author = 'Ben Gelens'
 
 # Company or vendor of this module
-CompanyName = 'Microsoft Corporation'
+CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) 2016 Microsoft Corporation. All rights reserved.'
+Copyright = '(c) 2017 Ben Gelens. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'This DSC Resource Module contains DSC resources to deal with Automation Hybrid Runbook Workers.'
@@ -95,13 +95,13 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags =  @('DSC','DesiredStateConfiguration','MSOMS','HybridRunbookWorker','AzureAutomation')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/bgelens/HybridRunbookWorkerDsc/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/bgelens/HybridRunbookWorkerDsc'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -114,7 +114,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-# HelpInfoURI = ''
+HelpInfoURI = 'https://github.com/bgelens/HybridRunbookWorkerDsc'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
