@@ -19,7 +19,7 @@ Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:ModuleName `
     -DSCResourceName $Global:DscResourceName `
-    -TestType Unit 
+    -TestType Unit
 
 #endregion HEADER
 
@@ -47,8 +47,9 @@ try
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
             Mock -CommandName TestRegModule -MockWith {return $true}
+            Mock -CommandName TestRegRegistry -MockWith {return $false}
 
-            It 'Returns a hashtable' {                
+            It 'Returns a hashtable' {
                 $targetResource = Get-TargetResource -Ensure 'Present' -Endpoint $EndPoint -Token $Token -GroupName $GroupName
                 $targetResource -is [System.Collections.Hashtable] | Should Be $true
             }
@@ -65,7 +66,7 @@ try
                     {Test-TargetResource -Ensure 'Present' -Endpoint $EndPoint -Token $Token -GroupName $GroupName} | Should Throw $ErrorRecord
                 }
             }
-            
+
             Context 'Invoking with HybridRegistration Module Present' {
                 Mock -CommandName TestRegModule -MockWith {return $true}
                 Mock -CommandName TestRegRegistry -MockWith {return $true}
@@ -77,7 +78,7 @@ try
                     {Test-TargetResource -Ensure 'Present' -Endpoint $EndPoint -Token $Token -GroupName $GroupName} | Should not Throw
                 }
             }
-            
+
             Context 'Invoking without finished registration' {
                 Mock -CommandName TestRegModule -MockWith {return $true}
                 Mock -CommandName TestRegRegistry -MockWith {return $true}
@@ -90,11 +91,11 @@ try
                     Test-TargetResource -Ensure 'Absent' -Endpoint $EndPoint -Token $Token -GroupName $GroupName | Should be $true
                 }
             }
-            
+
             Context 'Invoking with finished registration' {
                 Mock -CommandName TestRegModule -MockWith {return $true}
                 Mock -CommandName TestRegRegistry -MockWith {return $true}
-                
+
                 It 'Should return $false when registration has been done but desired GroupName has changed' {
                     Mock -CommandName GetRegRegistry -MockWith {[PSCustomObject]@{
                             RunbookWorkerGroup = 'OtherGroupName'
@@ -118,7 +119,8 @@ try
             Mock Remove-HybridRunbookWorker
             Mock Add-HybridRunbookWorker
             Mock -CommandName TestRegModule -MockWith {return $true}
-            
+            Mock -CommandName TestRegRegistry -MockWith {return $false}
+
             Context 'Invoke Registration' {
 
                 It 'Should call only "Add-HybridRunbookWorker"' {
@@ -139,14 +141,80 @@ try
                     Assert-MockCalled -CommandName Remove-HybridRunbookWorker -Exactly -Times 1
                 }
             }
-            
+
             Context 'Invoke De-Registration' {
                 It 'Should call only "Remove-HybridRunbookWorker"' {
+                    Mock -CommandName TestRegRegistry -MockWith {return $true}
                     $Null = Set-TargetResource -Ensure 'Absent' -Endpoint $EndPoint -Token $Token -GroupName $GroupName
 
                     Assert-MockCalled -CommandName Add-HybridRunbookWorker -Exactly -Times 0
                     Assert-MockCalled -CommandName Remove-HybridRunbookWorker -Exactly -Times 1
                 }
+            }
+        }
+        #endregion
+
+        #region Function TestRegModule
+        Describe "$($Global:DSCResourceName)\TestRegModule" {
+            It 'Should return "True" when HybridRegistration module is present' {
+                Mock -CommandName Get-Module -MockWith {[pscustomobject]@{Name = 'HybridRegistration'}}
+                TestRegModule | Should -BeTrue
+            }
+
+            It 'Should return "False" when HybridRegistration module is absent' {
+                Mock -CommandName Get-Module -MockWith {}
+                TestRegModule | Should -BeFalse
+            }
+        }
+        #endregion
+
+        #region Function TestRegRegistry
+        Describe "$($Global:DSCResourceName)\TestRegRegistry" {
+            It 'Should return "True" when old registry path exists' {
+                Mock -CommandName Get-ItemProperty -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker' } -MockWith {[pscustomobject]@{Name='SomeProperty'}}
+                Mock -CommandName Get-Item
+
+                TestRegRegistry | Should -BeTrue
+                Assert-MockCalled -CommandName Get-Item -Times 0 -Exactly -Scope It
+            }
+
+            It 'Should return "True" when new registry path contains user records' {
+                Mock -CommandName Get-ItemProperty -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker' } -MockWith {}
+                Mock -CommandName Get-Item -MockWith {[pscustomobject]@{PSChildName = 'User'}}
+                Mock -CommandName Get-ChildItem -MockWith {[pscustomobject]@{PSChildName = 'User'}}
+
+                TestRegRegistry | Should -BeTrue
+                Assert-MockCalled -CommandName Get-Item -Times 1 -Exactly -Scope It
+            }
+
+            It 'Should return "False" when new registry path does not contain user records' {
+                Mock -CommandName Get-ItemProperty -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker' } -MockWith {}
+                Mock -CommandName Get-Item -MockWith {[pscustomobject]@{PSChildName = 'Machine'}}
+                Mock -CommandName Get-ChildItem -MockWith {[pscustomobject]@{PSChildName = 'Machine'}}
+
+                TestRegRegistry | Should -BeFalse
+                Assert-MockCalled -CommandName Get-Item -Times 1 -Exactly -Scope It
+            }
+        }
+        #endregion
+
+        #region Function GetRegRegistry
+        Describe "$($Global:DSCResourceName)\GetRegRegistry" {
+            It 'Should return an object when old registry path is used' {
+                Mock -CommandName Get-ItemProperty -MockWith {[PSCustomObject]@{RunbookWorkerGroup = 'OtherGroupName'}}
+                Mock -CommandName Get-Item
+
+                GetRegRegistry | Should -Not -BeNullOrEmpty
+                Assert-MockCalled -CommandName Get-Item -Times 0 -Exactly -Scope It
+            }
+
+            It 'Should return an object when new registry path is used' {
+                Mock -CommandName Get-ItemProperty -MockWith {}
+                Mock -CommandName Get-Item -MockWith {[pscustomobject]@{PSChildName = 'User'}}
+                Mock -CommandName Get-ChildItem -MockWith {[pscustomobject]@{PSChildName = 'User'}}
+
+                GetRegRegistry | Should -Not -BeNullOrEmpty
+                Assert-MockCalled -CommandName Get-Item -Times 1 -Exactly -Scope It
             }
         }
         #endregion
