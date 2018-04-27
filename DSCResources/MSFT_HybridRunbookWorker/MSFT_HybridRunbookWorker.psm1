@@ -314,7 +314,7 @@ function TestRegRegistry
     $testResult = $false
 
     $reg = Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker -ErrorAction SilentlyContinue
-    if ($null -eq $reg)
+    if ($null -ne $reg)
     {
         #newer version. Check for user registered hybrid workers.
         $regCheck = Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\* | 
