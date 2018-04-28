@@ -317,7 +317,7 @@ function TestRegRegistry
     if ($null -eq $reg)
     {
         #newer version. Check for user registered hybrid workers.
-        $regCheck = Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\* | 
+        $regCheck = Get-Item -Path HKLM:\SOFTWARE\Microsoft\HybridRunbookWorker\*\* -ErrorAction SilentlyContinue | 
             ForEach-Object -Process {
                 if (Get-ChildItem -Path $_.PSPath |
                     Where-Object -FilterScript {
