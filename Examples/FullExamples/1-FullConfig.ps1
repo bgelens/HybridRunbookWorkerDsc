@@ -10,7 +10,7 @@ configuration HybridRunbookWorkerConfig
         # Download a package
         xRemoteFile OIPackage
         {
-            Uri = "https://opsinsight.blob.core.windows.net/publicfiles/MMASetup-AMD64.exe"
+            Uri = "http://download.microsoft.com/download/E/D/B/EDB89FE2-3DC9-418A-8584-057B41871FA4/MMASetup-AMD64.exe"
             DestinationPath = $OIPackageLocalPath
         }
 
